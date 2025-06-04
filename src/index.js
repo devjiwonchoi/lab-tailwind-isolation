@@ -5,28 +5,47 @@ const root = createRoot(document)
 
 root.render(
   <StrictMode>
-    <h1>Hello World</h1>
+    {/* This should'nt be red */}
+    <h1 className="text-red-500">Hello World</h1>
   </StrictMode>
 )
 
-const script = document.createElement('script')
+registerDevTools()
 
-script.style.display = 'block'
-script.style.position = 'absolute'
-script.setAttribute('data-nextjs-dev-overlay', 'true')
+function registerDevTools() {
+  const script = document.createElement('script')
 
-const container = document.createElement('nextjs-portal')
-container.attachShadow({ mode: 'open' })
-script.appendChild(container)
+  script.style.display = 'block'
+  script.style.position = 'absolute'
+  script.style.top = '50%'
+  script.style.left = '50%'
+  script.style.transform = 'translate(-50%, -50%)'
+  script.setAttribute('data-nextjs-dev-overlay', 'true')
 
-document.body.appendChild(script)
+  const container = document.createElement('nextjs-portal')
+  const shadowRoot = container.attachShadow({ mode: 'open' })
+  script.appendChild(container)
 
-const devToolsRoot = createRoot(container, {
-  identifierPrefix: 'ndt-',
-})
+  document.body.appendChild(script)
 
-devToolsRoot.render(<DevTools />)
+  const devToolsRoot = createRoot(shadowRoot, {
+    identifierPrefix: 'ndt-',
+  })
+
+  appendTailwind(shadowRoot).then(() => {
+    devToolsRoot.render(<DevTools />)
+  })
+}
 
 function DevTools() {
-  return <p>dev overlay</p>
+  return <h1 className="text-red-500 text-4xl">dev overlay</h1>
+}
+
+async function appendTailwind(shadowRoot) {
+  const response = await fetch('/output.css')
+  const cssText = await response.text()
+
+  const styleElement = document.createElement('style')
+  styleElement.textContent = cssText
+  shadowRoot.appendChild(styleElement)
 }
