@@ -3,7 +3,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "style": "pnpm dlx @tailwindcss/cli -i ./src/input.css -o ./public/output.css --watch --minify"
   },
   "dependencies": {
     "react": "^19.1.0",
